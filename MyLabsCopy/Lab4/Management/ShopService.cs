@@ -331,8 +331,7 @@ namespace MyLabs.Lab4.Management
 
             string connection_string = $"Data Source={data_source};" +
                                        $"Initial Catalog={catalog};" +
-                                       $"User ID={userid};" +
-                                       $"Password={password}";
+                                       "Integrated Security=True";
             SqlConnection connection = new SqlConnection(connection_string);
 
             dao = new RelationalDatabase(connection, shop_table, product_table, shop_products_table, init_mode, db);

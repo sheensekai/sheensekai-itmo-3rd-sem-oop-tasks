@@ -3,11 +3,14 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using System.Data.Common;
+using System.IO;
 using MyLabs.Lab4;
 using MyLabs.Lab4.Management;
 using MyLabs.Lab2;
 using MyLabs.Lab4.Structure;
 using MyLabsCopy.Lab4.Structure;
+using MyLabsCopy.Lab5;
+using MyLabsCopy.Lab5.Serializer;
 
 namespace MyLabsCopy
 {
@@ -17,18 +20,8 @@ namespace MyLabsCopy
         static void Main(string[] args)
         {
 
-            while (true)
-            {
-                Console.WriteLine("Enter first value: ");
-                double.TryParse(Console.ReadLine(), out double value1);
-                Console.WriteLine("Enter second value: ");
-                double.TryParse(Console.ReadLine(), out double value2);
+            checkLab5();
 
-                Console.WriteLine("First value: {0}", value1 / 300);
-                Console.WriteLine("Second value: {0}", value2 / 10);
-                Console.WriteLine();
-
-            }
 
         }
 
@@ -89,9 +82,52 @@ namespace MyLabsCopy
         static void checkLab4()
         {
             ShopService logic = new ShopService();
-            logic.InitializeDAO("dao1.ini");
+            logic.InitializeDAO("dao2.ini");
+
+            Shop shop1 = logic.AddShop("Пятерочка");
+            Shop shop2 = logic.AddShop("Заря");
+            Shop shop3 = logic.AddShop("Юнион");
+
+            AProduct prod1 = logic.AddProduct("Шоколадка", "Аленка");
+            AProduct prod2 = logic.AddProduct("Молоко", "Простоквашино");
+            AProduct prod3 = logic.AddProduct("Колбаса", "Докторская");
+
+            logic.SetProductPrice(shop2, prod2, 60);
+            logic.SetProductPrice(shop3, prod2, 55);
+            logic.SetProductPrice(shop1, prod1, 40);
+
+            logic.SupplyShop(shop1, prod1, 20);
+            logic.SupplyShop(shop3, prod2, 15);
+
+            logic.SetProductPrice(shop3, prod1, 45);
+            logic.SetProductPrice(shop1, prod2, 60);
+
+            logic.SupplyShop(shop1, prod2, 10);
+            logic.SupplyShop(shop3, prod1, 20);
+
+            var pair = logic.FindCheapest(prod1);
+            Console.WriteLine("{0}, {1}, {2}", pair.First.Name, pair.Second.Name, pair.Second.Price.ToString());
+            pair = logic.FindCheapest(prod2);
+            Console.WriteLine("{0}, {1}, {2}", pair.First.Name, pair.Second.Name, pair.Second.Price.ToString());
+
+            List<AProduct> list = new List<AProduct>();
+            list.Add(prod1);
+            list.Add(prod2);
+            List<int> amounts = new List<int>();
+            amounts.Add(15);
+            amounts.Add(5);
+            check = true;
+            logic.BuyProduct(shop1, list, amounts);
+
+            list.RemoveAt(0);
+            amounts.RemoveAt(0);
+            Console.WriteLine("This {0}", logic.FindCheapestAmount(list, amounts).First.Name);
+            logic.SupplyShop(shop1, prod2, 20);
+            amounts[0] = 20;
+            Console.WriteLine("This {0}", logic.FindCheapestAmount(list, amounts).First.Name);
+
             DataBase db = logic.GetData();
-            logic.InitializeDAO("dao2.ini", db);
+            logic.InitializeDAO("dao1.ini", db);
         }
 
         static void checkFileDataBase()
@@ -144,6 +180,43 @@ namespace MyLabsCopy
 
         static void checkRelativeDataBase()
         {
+
+        }
+
+        static void checkLab5()
+        {
+            
+
+            Triangle tr = new Triangle(new Point(1, 2, 3),
+                new Point(2, 4, 6),
+                new Point(3, 6, 9));
+
+            Console.WriteLine("xml");
+            var xmlserializer = new XMLSerializer<Triangle>();
+            var stream = File.OpenWrite("Triangles.xml");
+            xmlserializer.Serialize(tr, stream);
+            stream.Close();
+            Triangle tr2 = xmlserializer.Deserialize(File.OpenRead("Triangles.xml"));
+            Console.WriteLine(tr2);
+
+            Console.WriteLine("binary");
+            var binaryserializer = new BinarySerializer<Triangle>();
+            stream = File.OpenWrite("Triangles.bin");
+            binaryserializer.Serialize(tr, stream);
+            stream.Close();
+            Triangle tr3 = binaryserializer.Deserialize(File.OpenRead("Triangles.bin"));
+            Console.WriteLine(tr3);
+
+            Console.WriteLine("db");
+            string connection_string = "Data Source=ZVERDVD-EKLQ97V\\SQLEXPRESS;Initial Catalog=Lab5;Integrated Security=True";
+            SqlConnection conn = new SqlConnection(connection_string);
+            TriangleDB db = new TriangleDB(conn);
+            db.AddTriangle(tr);
+            var triangles = db.GetAllTriangles();
+            foreach (Triangle triangle in triangles)
+            {
+                Console.WriteLine(triangle);
+            }
 
         }
     }

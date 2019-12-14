@@ -51,7 +51,7 @@ namespace MyLabs.Lab4.DAO
         {
             InitTable(shops_table, "[Id] [int] NOT NULL, [Name] [nvarchar](50) NOT NULL");
             InitTable(products_table,
-                "[Id] [int] NOT NULL, [Type][nvarchar](50) NOT NULL, [Name][nvarchar](50) NOT NULL");
+                "[Id] [int] NOT NULL, [AccountType][nvarchar](50) NOT NULL, [Name][nvarchar](50) NOT NULL");
             InitTable(shops_products_table,
                 "[ShopId] [int] NOT NULL, [ProductId][int] NOT NULL, [Amount][int] NOT NULL, [Price][real] NOT NULL");
         }
@@ -108,7 +108,7 @@ namespace MyLabs.Lab4.DAO
         private int GetProductID(AProduct product)
         {
             string query = $"SELECT {products_table}.Id FROM {products_table} WHERE " +
-                           $"{products_table}.Type = '{product.Type}' AND {products_table}.Name = '{product.Name}'";
+                           $"{products_table}.AccountType = '{product.Type}' AND {products_table}.Name = '{product.Name}'";
             connection.Open();
             SqlCommand command = new SqlCommand(query, connection);
             using (var reader = command.ExecuteReader())
@@ -130,10 +130,7 @@ namespace MyLabs.Lab4.DAO
 
         private bool ExecuteNonQuery(string query)
         {
-            connection.Open();
-            SqlCommand command = new SqlCommand(query, connection);
-            command.ExecuteNonQuery();
-            connection.Close();
+           
             return true;
         }
 
@@ -150,7 +147,6 @@ namespace MyLabs.Lab4.DAO
             try
             {
                 string query = $"INSERT INTO {table} VALUES {values}";
-                Console.WriteLine(query);
                 return ExecuteNonQuery(query);
             }
             catch (Exception e)
@@ -322,7 +318,7 @@ namespace MyLabs.Lab4.DAO
         {
             try
             {
-                // можно быстрее через id\ тут вообще нужен еще и type для однозначности
+                // можно быстрее через id\ тут вообще нужен еще и accountType для однозначности
                 return DoDelete(products_table, $"{products_table}.Name", $"'{product.Name}'");
             }
             catch (Exception e)
@@ -361,7 +357,7 @@ namespace MyLabs.Lab4.DAO
             {
                 int shop_id = GetShop(shop).Id;
                 string selected =
-                    $"{products_table}.Id, {products_table}.Type, {products_table}.Name, {shops_products_table}.Amount, {shops_products_table}.Price";
+                    $"{products_table}.Id, {products_table}.AccountType, {products_table}.Name, {shops_products_table}.Amount, {shops_products_table}.Price";
                 string query = $"SELECT {selected} FROM {products_table} JOIN {shops_products_table} ON " +
                                $"{products_table}.Name = '{name}' AND {shops_products_table}.ProductId = {products_table}.Id " +
                                $" AND {shops_products_table}.ShopId = {shop_id} ";
@@ -413,7 +409,7 @@ namespace MyLabs.Lab4.DAO
                                   $"{shops_table}.Id, {shops_table}.Name";
                 string product_query =
                     $"SELECT {products_table}.Id FROM {products_table} WHERE " +
-                    $"{products_table}.Type = '{type}' AND {products_table}.Name = '{name}' ";
+                    $"{products_table}.AccountType = '{type}' AND {products_table}.Name = '{name}' ";
                 string sql_query = $"SELECT {selected} FROM {shops_products_table} INNER JOIN {shops_table} ON " +
                                    $"{shops_products_table}.ProductID = ( {product_query} ) AND " +
                                    $"{shops_table}.Id = {shops_products_table}.ShopId";
@@ -459,7 +455,7 @@ namespace MyLabs.Lab4.DAO
         {
             Shop new_shop = GetShop(shop.Name);
             string selected =
-                $"{products_table}.Id, {products_table}.Type, {products_table}.Name, {shops_products_table}.Amount, {shops_products_table}.Price";
+                $"{products_table}.Id, {products_table}.AccountType, {products_table}.Name, {shops_products_table}.Amount, {shops_products_table}.Price";
             string sql_query = $"SELECT {selected} FROM {shops_products_table} INNER JOIN {products_table} ON " +
                                $"{shops_products_table}.ShopId = {new_shop.Id} AND {shops_products_table}.ProductId = {products_table}.ID";
 
