@@ -29,7 +29,7 @@ namespace MyLabsCopy.Lab5
 
         public override string ToString()
         {
-            return $"{nameof(x)}: {x}, {nameof(x)}: {x}, {nameof(x)}: {x}";
+            return $"{nameof(x)}: {x}, {nameof(y)}: {y}, {nameof(z)}: {z}";
         }
     }
 }

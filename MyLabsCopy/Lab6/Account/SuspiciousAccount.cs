@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using MyLabsCopy.Lab6.Requests;
 
 namespace MyLabsCopy.Lab6.Account
 {
@@ -14,6 +15,12 @@ namespace MyLabsCopy.Lab6.Account
             this.account = account;
             this.limit = limit;
         }
+
+        public double GetBalance()
+        {
+            return account.GetBalance();
+        }
+
 
         public void Withdrawal(double amount)
         {
@@ -38,10 +45,10 @@ namespace MyLabsCopy.Lab6.Account
                 throw new AccountException("Suspicious Client");
             }
         }
-
         public void Replenishment(double amount)
         {
             account.Replenishment(amount);
         }
+
     }
 }

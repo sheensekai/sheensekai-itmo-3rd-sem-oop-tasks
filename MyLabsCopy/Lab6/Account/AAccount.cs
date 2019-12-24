@@ -11,12 +11,17 @@ namespace MyLabsCopy.Lab6.Account
     {
         internal double balance;
 
+        public double GetBalance()
+        {
+            return balance;
+
+        }
+
         public AAccount()
         {
             balance = 0;
         }
 
-        public abstract void HandleRequest(IRequest request);
         public void Withdrawal(double amount)
         {
             if (CheckForWithdrawal(amount))

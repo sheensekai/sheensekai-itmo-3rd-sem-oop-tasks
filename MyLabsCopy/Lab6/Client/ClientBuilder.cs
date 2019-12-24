@@ -7,37 +7,32 @@ namespace MyLabsCopy.Lab6.Client
 {
     class ClientBuilder
     {
-        private Client client;
+        private string name = null;
+        private string surname = null;
+        private string address = null;
+        private int id = 0;
         public ClientBuilder(string name, string surname)
         {
-            client = new Client();
-            client.name = name;
-            client.surname = surname;
-            client.suspicious = true;
-            client.susp_limit = 1000;
-            client.accounts = new List<IAccount>();
+            this.name = name;
+            this.surname = surname;
         }
 
         public ClientBuilder Address(string address)
         {
-            client.address = address;
-            CheckIfSuspicious();
+            this.address = address;
             return this;
         }
 
         public ClientBuilder Passport(int id)
         {
-            client.passport = id;
-            CheckIfSuspicious();
+            this.id = id;
             return this;
         }
 
-        private void CheckIfSuspicious()
+        public Client Build()
         {
-            if (client.passport != null && !string.IsNullOrEmpty(client.address))
-            {
-                client.suspicious = false;
-            }
+            return new Client(name, surname, address, id);
         }
+
     }
 }

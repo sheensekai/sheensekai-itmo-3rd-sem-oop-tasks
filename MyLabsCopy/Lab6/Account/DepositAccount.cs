@@ -18,11 +18,6 @@ namespace MyLabsCopy.Lab6.Account
             this.date = date;
         }
 
-        public override void HandleRequest(IRequest request)
-        {
-            request.CommitRequest(this);
-        }
-
         protected override bool CheckForWithdrawal(double amount)
         {
             double after_withdraw = balance - amount;

@@ -5,11 +5,10 @@ using MyLabsCopy.Lab6.Account;
 
 namespace MyLabsCopy.Lab6.Requests
 {
-    interface IRequest
+    abstract class ARequest
     {
-        void CommitRequest(CreditCardAccount account);
-        void CommitRequest(CurrentAccount account);
-        void CommitRequest(DepositAccount account);
+        public ARequest next = null;
+        abstract public void Invoke(CurrentAccount account);
 
     }
 }

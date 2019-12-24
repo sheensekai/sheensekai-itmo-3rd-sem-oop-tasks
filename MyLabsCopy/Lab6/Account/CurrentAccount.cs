@@ -15,11 +15,6 @@ namespace MyLabsCopy.Lab6.Account
             this.percent = percent;
         }
 
-        public override void HandleRequest(IRequest request)
-        {
-            request.CommitRequest(this);
-        }
-
         protected override bool CheckForWithdrawal(double amount)
         {
             double after_withdraw = balance - amount;

@@ -11,6 +11,10 @@ using MyLabs.Lab4.Structure;
 using MyLabsCopy.Lab4.Structure;
 using MyLabsCopy.Lab5;
 using MyLabsCopy.Lab5.Serializer;
+using MyLabsCopy.Lab6;
+using MyLabsCopy.Lab6.Account;
+using MyLabsCopy.Lab6.Client;
+using MyLabsCopy.Lab6.Requests;
 
 namespace MyLabsCopy
 {
@@ -20,7 +24,7 @@ namespace MyLabsCopy
         static void Main(string[] args)
         {
 
-            checkLab5();
+            checkLab6();
 
 
         }
@@ -187,9 +191,9 @@ namespace MyLabsCopy
         {
             
 
-            Triangle tr = new Triangle(new Point(1, 2, 3),
-                new Point(2, 4, 6),
-                new Point(3, 6, 9));
+            Triangle tr = new Triangle(new Point(0, 2, 3),
+                new Point(2, 0, 6),
+                new Point(3, 6, 0));
 
             Console.WriteLine("xml");
             var xmlserializer = new XMLSerializer<Triangle>();
@@ -218,6 +222,19 @@ namespace MyLabsCopy
                 Console.WriteLine(triangle);
             }
 
+        }
+
+        static void checkLab6()
+        {
+            Client client1 = new ClientBuilder("Denis", "Fevralev")
+                .Address("Serebrystiy Pr., 9k1")
+                .Passport(12341234).Build();
+            Client client2 = new ClientBuilder("Iraklyi", "Ubilava").Build();
+            client1.AddAccount(new AccountFabric().CreateAccount(0.04));
+            IAccount account = client1.Accounts[0];
+            account.Replenishment(100);
+            PercentRequest.GetInterest((CurrentAccount)account);
+            Console.WriteLine(account.GetBalance());
         }
     }
 }
